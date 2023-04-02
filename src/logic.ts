@@ -1,12 +1,15 @@
 import { Request, Response } from "express";
 import { market } from "./database";
-import { IProduct } from "./interfaces";
+import { IProduct, IProductRequest } from "./interfaces";
+
+let productIdCounter = 0;
 
 export const createProduct = (req: Request, res: Response): Response => {
-  const data = res.locals.product.productInfo;
+  const data: IProductRequest = res.locals.product.productInfo;
 
+  productIdCounter++;
   const newProduct: IProduct = {
-    id: new Date().getTime(),
+    id: productIdCounter,
     ...data,
     expirationDate: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
   };
