@@ -33,8 +33,6 @@ export const ensureNameExistsMiddleware = (
   );
   if (productExists) {
     return res.status(409).json({ message: "Product already registered." });
-  } else if (!productExists) {
-    return res.status(404).json({ message: "Product not found" });
   }
 
   res.locals.product = {
