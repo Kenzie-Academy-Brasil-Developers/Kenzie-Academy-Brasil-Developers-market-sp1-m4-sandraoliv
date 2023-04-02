@@ -16,9 +16,9 @@ app.use(express.json());
 
 app.post("/products", ensureNameExistsMiddleware, createProduct);
 app.get("/products", listAllProducts);
-app.get("products/product/:id", ensureIdExistsMiddleware, listProductById);
+app.get("products/:id", ensureIdExistsMiddleware, listProductById);
 app.patch(
-  "products/product/:id",
+  "products/:id",
   ensureIdExistsMiddleware,
   ensureNameExistsMiddleware,
   updateProduct

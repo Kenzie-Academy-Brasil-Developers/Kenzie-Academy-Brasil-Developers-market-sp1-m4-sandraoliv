@@ -8,6 +8,7 @@ export const ensureIdExistsMiddleware = (
   next: NextFunction
 ): Response | void => {
   const id = parseInt(req.params.id);
+
   const findIndex = market.findIndex((product) => product.id === id);
   if (findIndex === -1) {
     return res.status(404).json({
@@ -28,6 +29,7 @@ export const ensureNameExistsMiddleware = (
   next: NextFunction
 ): Response | void => {
   const productData: IProductRequest = req.body;
+
   const productExists = market.some(
     (product: IProductRequest) => product.name === productData.name
   );

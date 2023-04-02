@@ -4,6 +4,11 @@ import { IProduct, IProductRequest } from "./interfaces";
 
 let productIdCounter = 0;
 
+const total = market.reduce(
+  (previosValue, currentValue) => previosValue + currentValue.price,
+  0
+);
+
 export const createProduct = (req: Request, res: Response): Response => {
   const data: IProductRequest = res.locals.product.productInfo;
 
@@ -28,7 +33,20 @@ export const listProductById = (req: Request, res: Response): Response => {
   return res.json(market[index]);
 };
 
-export const updateProduct = (req: Request, res: Response) => {};
+export const updateProduct = (req: Request, res: Response) => {
+  const index = res.locals.product.productIndex;
+
+  const currentProduct: IProduct = market[index];
+  const newProduct: IProductRequest = req.body;
+
+  const updateProduct = {
+    ...currentProduct,
+    ...newProduct,
+  };
+  market[index] = updateProduct;
+
+  return res.status(200).json(updateProduct);
+};
 
 export const deleteProduct = (req: Request, res: Response) => {
   const index = res.locals.product.productIndex;
