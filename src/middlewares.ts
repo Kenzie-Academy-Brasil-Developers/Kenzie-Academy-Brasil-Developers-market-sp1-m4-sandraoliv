@@ -1,25 +1,23 @@
 import { NextFunction, Request, Response } from "express";
 import { market } from "./database";
-import { IProductRequest } from "./interfaces";
+import { IProduct } from "./interfaces";
 
 export const ensureIdExistsMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction
 ): Response | void => {
-  const id = parseInt(req.params.id);
+  const { id } = req.params;
 
-  const findIndex = market.findIndex((product) => product.id === id);
+  const findIndex = market.findIndex((product) => product.id === parseInt(id));
   if (findIndex === -1) {
     return res.status(404).json({
       error: "Product not found",
     });
   }
 
-  res.locals.product = {
-    productId: id,
-    productIndex: findIndex,
-  };
+  res.locals.findIndex = findIndex;
+
   return next();
 };
 
@@ -28,18 +26,35 @@ export const ensureNameExistsMiddleware = (
   res: Response,
   next: NextFunction
 ): Response | void => {
-  const productData: IProductRequest = req.body;
+  const productData = req.body;
+  let verificationProductName;
+  productData.forEach((element: IProduct) => {
+    verificationProductName = market.find((product) => {
+      return product.name === element.name;
+    });
+  });
 
-  const productExists = market.some(
-    (product: IProductRequest) => product.name === productData.name
-  );
-  if (productExists) {
+  if (verificationProductName) {
     return res.status(409).json({ message: "Product already registered." });
   }
 
-  res.locals.product = {
-    productInfo: productData,
-  };
+  return next();
+};
+
+export const ensureThatOnlyOneNameExistsMiddleware = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): Response | void => {
+  const { name } = req.body;
+
+  let verificationProductName = market.find((product) => {
+    return product.name === name;
+  });
+
+  if (verificationProductName) {
+    return res.status(409).json({ message: "Product already registered." });
+  }
 
   return next();
 };
